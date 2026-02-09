@@ -3,42 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Theme Editor - v2.2.4</title>
+    <title>HTML Theme Editor - Universal Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans JP', sans-serif; background-color: #09090b; color: #f4f4f5; overflow: hidden; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #18181b; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
-        .glass-panel { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(8px); border-right: 1px solid #27272a; }
-        .preview-container { background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
-        .color-card { background: #18181b; border: 1px solid #27272a; transition: all 0.2s ease; }
-        .color-card:hover { border-color: #3f3f46; }
-        input[type="color"] { -webkit-appearance: none; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; background: none; }
-        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: 1px solid #3f3f46; border-radius: 6px; }
-        #drop-zone.drag-over { background-color: rgba(39, 39, 42, 0.8); border-color: #3b82f6; transform: scale(1.02); }
-        .modal-overlay { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 50; }
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #09090b;
+            color: #f4f4f5;
+            overflow: hidden;
+        }
+
+        /* スクロールバーのカスタマイズ */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #18181b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #52525b;
+        }
+
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(8px);
+            border-right: 1px solid #27272a;
+        }
+
+        .preview-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .color-card {
+            background: #18181b;
+            border: 1px solid #27272a;
+            transition: all 0.2s ease;
+        }
+
+        .color-card:hover {
+            border-color: #3f3f46;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: 1px solid #3f3f46;
+            border-radius: 6px;
+        }
+
+        #drop-zone.drag-over {
+            background-color: rgba(39, 39, 42, 0.8);
+            border-color: #3b82f6;
+            transform: scale(1.02);
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+        }
+
+        .theme-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            background: #3b82f6;
+            color: white;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col">
 
+    <!-- ヘッダー -->
     <header class="h-16 border-b border-zinc-800 flex items-center justify-between px-8 z-10 bg-zinc-950">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
             </div>
-            <h1 class="text-lg font-medium tracking-tight">HTML Theme Editor <span class="text-zinc-500 font-normal text-sm">v2.2.4</span></h1>
+            <h1 class="text-lg font-medium tracking-tight">HTML Theme Editor <span class="text-zinc-500 font-normal text-sm">v2.3</span></h1>
         </div>
         <div class="flex items-center gap-4">
             <span id="file-name-header" class="text-xs text-zinc-500 italic">No file loaded</span>
+            <button id="clear-btn" class="hidden text-xs px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded transition-colors flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"/>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    <line x1="10" x2="10" y1="11" y2="17"/>
+                    <line x1="14" x2="14" y1="11" y2="17"/>
+                </svg>
+                クリア
+            </button>
         </div>
     </header>
 
+    <!-- メインコンテンツ -->
     <main class="flex-1 flex overflow-hidden">
+        
+        <!-- サイドバー -->
         <aside class="w-96 glass-panel flex flex-col">
+            <!-- ファイル選択・ドロップエリア -->
             <div id="drop-zone" class="m-6 p-8 border-2 border-dashed border-zinc-700 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:border-zinc-500">
                 <input type="file" id="file-input" class="hidden" accept=".html,.htm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-500 mb-2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -47,19 +132,22 @@
                 <button id="load-sample-btn" class="mt-4 text-[11px] text-blue-400 hover:text-blue-300 underline underline-offset-4">動作確認用のサンプルを読み込む</button>
             </div>
 
+            <!-- テーマ選択エリア -->
             <div id="theme-selector" class="hidden mx-6 mb-4">
                 <label class="text-xs font-bold text-zinc-500 uppercase tracking-widest block mb-2">編集するテーマを選択</label>
                 <select id="theme-select" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-300 focus:outline-none focus:border-blue-600">
+                    <option value="">選択してください</option>
                 </select>
             </div>
 
+            <!-- 編集セクション -->
             <div class="flex-1 overflow-y-auto px-6 pb-6 space-y-8">
                 <section>
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-xs font-bold text-zinc-500 uppercase tracking-widest">CSS Variables</h2>
                         <div class="flex gap-2">
                             <button id="reset-all-btn" class="hidden text-[10px] bg-amber-600/10 hover:bg-amber-600/20 text-amber-400 border border-amber-600/30 px-2 py-1 rounded transition-colors">
-                                すべて戻す
+                                すべて元に戻す
                             </button>
                             <button id="import-trigger-btn" class="hidden text-[10px] bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 border border-blue-600/30 px-2 py-1 rounded transition-colors">
                                 インポート
@@ -73,17 +161,24 @@
             </div>
         </aside>
 
+        <!-- プレビューエリア -->
         <div class="flex-1 bg-zinc-900 p-8 flex flex-col">
             <div class="mb-4 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-zinc-500 font-medium tracking-wide uppercase">Preview</span>
                     <span id="file-name-display" class="text-xs bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded">---</span>
                 </div>
+                
                 <div id="action-buttons" class="flex gap-2 opacity-30 pointer-events-none transition-opacity duration-300">
-                    <button id="copy-palette-btn" class="flex items-center gap-2 px-4 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded text-xs font-medium transition-colors">パレットをコピー</button>
-                    <button id="download-btn" class="flex items-center gap-2 px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-medium transition-colors shadow-lg shadow-blue-900/20">HTMLファイルを保存</button>
+                    <button id="copy-palette-btn" class="flex items-center gap-2 px-4 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded text-xs font-medium transition-colors">
+                        パレットをコピー
+                    </button>
+                    <button id="download-btn" class="flex items-center gap-2 px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-medium transition-colors shadow-lg shadow-blue-900/20">
+                        HTMLファイルを保存
+                    </button>
                 </div>
             </div>
+
             <div class="preview-container flex-1 bg-white relative">
                 <iframe id="preview-iframe" class="w-full h-full border-none" sandbox="allow-scripts allow-same-origin"></iframe>
                 <div id="preview-overlay" class="absolute inset-0 bg-zinc-950 flex items-center justify-center transition-opacity duration-500">
@@ -93,6 +188,7 @@
         </div>
     </main>
 
+    <!-- インポート用モーダル -->
     <div id="import-modal" class="hidden fixed inset-0 modal-overlay flex items-center justify-center p-4">
         <div class="bg-zinc-900 border border-zinc-800 w-full max-w-xl rounded-xl shadow-2xl flex flex-col">
             <div class="p-6 border-b border-zinc-800 flex justify-between items-center">
@@ -108,6 +204,7 @@
         </div>
     </div>
 
+    <!-- 非表示要素 -->
     <textarea id="copy-buffer" class="fixed opacity-0 pointer-events-none"></textarea>
     <div id="toast-container" class="fixed bottom-6 right-6 flex flex-col gap-2"></div>
 
@@ -115,9 +212,10 @@
         let originalHtml = "";
         let currentVariables = {}; 
         let currentFileName = "updated_file.html";
-        let detectedThemes = [];
-        let currentThemeKey = null;
-        let extractionMethod = null;
+        let detectedThemes = []; 
+        let currentThemeKey = null; 
+        let extractionMethod = null; // 'css-root', 'css-attribute', or 'js'
+        let themeMetadata = {}; 
 
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
@@ -127,26 +225,56 @@
         const actionButtons = document.getElementById('action-buttons');
         const importTriggerBtn = document.getElementById('import-trigger-btn');
         const resetAllBtn = document.getElementById('reset-all-btn');
-        const themeSelector = document.getElementById('theme-selector');
-        const themeSelect = document.getElementById('theme-select');
+        const copyPaletteBtn = document.getElementById('copy-palette-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const loadSampleBtn = document.getElementById('load-sample-btn');
         const fileNameDisplay = document.getElementById('file-name-display');
         const fileNameHeader = document.getElementById('file-name-header');
         const importModal = document.getElementById('import-modal');
         const importTextarea = document.getElementById('import-textarea');
         const applyImportBtn = document.getElementById('apply-import-btn');
         const copyBuffer = document.getElementById('copy-buffer');
+        const themeSelector = document.getElementById('theme-selector');
+        const themeSelect = document.getElementById('theme-select');
+        const clearBtn = document.getElementById('clear-btn');
 
-        dropZone.addEventListener('click', () => fileInput.click());
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-        dropZone.addEventListener('drop', (e) => {
+        // --- ファイル読み込み ---
+        dropZone.onclick = () => fileInput.click();
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); };
+        dropZone.ondragleave = () => dropZone.classList.remove('drag-over');
+        dropZone.ondrop = (e) => {
             e.preventDefault();
             dropZone.classList.remove('drag-over');
-            const file = e.dataTransfer.files[0];
-            if (file) handleFile(file);
-        });
-        fileInput.addEventListener('change', (e) => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+            if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+        };
+        fileInput.onchange = (e) => { if (e.target.files[0]) handleFile(e.target.files[0]); };
         
+        loadSampleBtn.onclick = () => {
+            const sample = `<!DOCTYPE html>
+<html>
+<head>
+<style>
+:root {
+    --primary-color: #3b82f6;
+    --bg-color: #f3f4f6;
+    --text-color: #111827;
+}
+body { background: var(--bg-color); color: var(--text-color); font-family: sans-serif; padding: 2rem; }
+.card { background: white; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+h1 { color: var(--primary-color); }
+</style>
+</head>
+<body>
+<div class="card">
+<h1>サンプルページ</h1>
+<p>これは動作確認用のサンプルです。左側のカラーピッカーで色を変更できます。</p>
+</div>
+</body>
+</html>`;
+            currentFileName = "sample.html";
+            processHtmlContent(sample);
+        };
+
         function handleFile(file) {
             currentFileName = file.name;
             const reader = new FileReader();
@@ -154,127 +282,494 @@
             reader.readAsText(file);
         }
 
+        // --- CSS変数の抽出（全形式対応版） ---
         function processHtmlContent(html) {
+            // 状態をリセット
             originalHtml = html;
             currentVariables = {};
             detectedThemes = [];
-            themeSelector.classList.add('hidden');
+            currentThemeKey = null;
+            extractionMethod = null;
+            themeMetadata = {};
 
+            // UIを完全にリセット
+            themeSelector.classList.add('hidden');
+            themeSelect.innerHTML = '<option value="">選択してください</option>';
+            themeSelect.value = '';
+            themeSelect.onchange = null;
+            
+            // ボタン類を非表示に（テーマ選択またはアクティブ化で再表示される）
+            importTriggerBtn.classList.add('hidden');
+            resetAllBtn.classList.add('hidden');
+            clearBtn.classList.add('hidden');
+            actionButtons.classList.add('opacity-30', 'pointer-events-none');
+            
+            // 変数リストをリセット
+            variableList.innerHTML = `<div class="text-center py-10 text-zinc-600 text-sm italic">読み込み中...</div>`;
+
+            // Method 1: JavaScript内のTHEMESオブジェクトを検出
             const jsThemes = extractJavaScriptThemes(html);
             if (jsThemes && jsThemes.length > 0) {
                 detectedThemes = jsThemes;
                 extractionMethod = 'js';
-                showThemeSelector(jsThemes);
-            } else {
-                const cssVars = extractCssRootVariables(html);
-                if (Object.keys(cssVars).length > 0) {
-                    currentVariables = cssVars;
-                    extractionMethod = 'css';
-                    refreshUI();
-                } else {
-                    variableList.innerHTML = `<div class="text-center py-10 text-zinc-600 text-sm italic">CSS変数が見つかりませんでした</div>`;
-                    showToast("CSS変数が見つかりませんでした", "error");
-                }
+                handleMultipleThemes();
+                return;
             }
-        }
-
-        function extractJavaScriptThemes(html) {
-            const themes = [];
-            const themesPattern = /const\s+THEMES\s*=\s*(\{[\s\S]*?\n\s*\});/;
-            const match = html.match(themesPattern);
-            if (!match) return null;
             
-            const themesBlock = match[1];
-            // 改良版：行単位ではなく、より確実に「テーマのまとまり」を抽出
-            // キー名: { ... vars: { ... } } を探す
-            const themeRegex = /(\w+):\s*\{[\s\S]*?name:\s*(['"])(.*?)\2[\s\S]*?vars:\s*\{([\s\S]*?)\}/g;
-            let m;
-            while ((m = themeRegex.exec(themesBlock)) !== null) {
-                const key = m[1];
-                const name = m[3];
-                const varsContent = m[4];
-                
-                const variables = {};
-                // 変数名が -- で始まるものだけを抽出
-                const varPattern = /(['"]?)(--[\w-]+)\1\s*:\s*(['"])([^'"]+)\3/g;
-                let v;
-                while ((v = varPattern.exec(varsContent)) !== null) {
-                    variables[v[2]] = { value: v[4], original: v[4] };
-                }
-                
-                if (Object.keys(variables).length > 0) {
-                    themes.push({ key, name, variables });
-                }
+            // Method 2: CSS属性セレクタ形式を検出 (html[data-theme="..."])
+            const cssAttrThemes = extractCssAttributeThemes(html);
+            if (cssAttrThemes && cssAttrThemes.length > 0) {
+                detectedThemes = cssAttrThemes;
+                extractionMethod = 'css-attribute';
+                handleMultipleThemes();
+                return;
             }
-            return themes;
-        }
-
-        function extractCssRootVariables(html) {
-            const variables = {};
-            const varRegex = /(--[\w-]+)\s*:\s*([^;?]+?)(?=;|})/g;
-            let match;
-            while ((match = varRegex.exec(html)) !== null) {
-                const name = match[1].trim(), value = match[2].trim();
-                if (/^#|rgb|hsl/.test(value)) variables[name] = { value, original: value };
+            
+            // Method 3: 従来の:root CSSルールを検出
+            const cssVars = extractCssRootVariables(html);
+            if (Object.keys(cssVars).length > 0) {
+                currentVariables = cssVars;
+                extractionMethod = 'css-root';
+                detectedThemes = [{ key: 'default', name: 'Default Theme', variables: cssVars }];
+                currentThemeKey = 'default';
+                activateTheme();
+                return;
             }
-            return variables;
+
+            // 変数が見つからなかった場合
+            variableList.innerHTML = `<div class="text-center py-10 text-zinc-600 text-sm italic">CSS変数が見つかりませんでした</div>`;
+            showToast("CSS変数が見つかりませんでした", "error");
         }
 
-        function showThemeSelector(themes) {
-            themeSelect.innerHTML = '<option value="">選択してください</option>';
-            themes.forEach(t => {
-                const opt = document.createElement('option');
-                opt.value = t.key; opt.textContent = t.name;
-                themeSelect.appendChild(opt);
-            });
-            themeSelector.classList.remove('hidden');
-            themeSelect.onchange = (e) => {
-                const selected = themes.find(t => t.key === e.target.value);
-                if (selected) {
-                    currentThemeKey = selected.key;
-                    currentVariables = JSON.parse(JSON.stringify(selected.variables));
-                    refreshUI();
-                }
-            };
+        // 複数テーマが見つかった場合の処理
+        function handleMultipleThemes() {
+            if (detectedThemes.length > 1) {
+                showThemeSelector(detectedThemes);
+                clearBtn.classList.remove('hidden');
+                fileNameDisplay.textContent = currentFileName;
+                fileNameHeader.textContent = currentFileName;
+                
+                // プレビューを設定（テーマ未選択でもHTMLプレビューを表示）
+                setupPreview(originalHtml);
+                previewOverlay.classList.add('hidden');
+                
+                showToast(`${detectedThemes.length}個のテーマを検出しました`);
+            } else {
+                currentThemeKey = detectedThemes[0].key;
+                currentVariables = detectedThemes[0].variables;
+                activateTheme();
+            }
         }
 
-        function refreshUI() {
+        // テーマをアクティブ化
+        function activateTheme() {
             renderVariableEditor();
             setupPreview(originalHtml);
             previewOverlay.classList.add('hidden');
             actionButtons.classList.remove('opacity-30', 'pointer-events-none');
             importTriggerBtn.classList.remove('hidden');
             resetAllBtn.classList.remove('hidden');
+            clearBtn.classList.remove('hidden');
             fileNameDisplay.textContent = currentFileName;
             fileNameHeader.textContent = currentFileName;
-            showToast("テーマを読み込みました");
+            showToast("ファイルを読み込みました");
+        }
+
+        // JavaScript内のTHEMES定義を抽出（拡張版 - 様々な変数名に対応）
+        function extractJavaScriptThemes(html) {
+            const themes = [];
+            
+            // 様々なオブジェクト名に対応: THEMES, COLORS, PALETTE, STYLES, COLOR_SCHEMES等
+            const objectNames = ['THEMES', 'COLORS', 'PALETTE', 'STYLES', 'COLOR_SCHEMES', 'THEME_COLORS', 'colorSchemes', 'themes', 'colors'];
+            let themesBlock = null;
+            let foundObjectName = null;
+            
+            for (const objName of objectNames) {
+                const pattern = new RegExp(`const\\s+${objName}\\s*=\\s*(\\{[\\s\\S]*?\\n\\s*\\});`, 'i');
+                const match = html.match(pattern);
+                
+                if (match) {
+                    themesBlock = match[1];
+                    foundObjectName = objName;
+                    break;
+                }
+            }
+            
+            if (!themesBlock) return null;
+
+            const lines = themesBlock.split('\n');
+            let currentTheme = null;
+            let insideVars = false;
+            let varsContent = '';
+            let varsDepth = 0;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                
+                // テーマの開始を検出（varsは除外）
+                const themeMatch = line.match(/^\s+(\w+):\s*\{/);
+                if (themeMatch && themeMatch[1] !== 'vars') {
+                    // 前のテーマを保存
+                    if (currentTheme && varsContent) {
+                        const variables = parseJsVarsBlock(varsContent, currentTheme);
+                        if (Object.keys(variables).length > 0) {
+                            themes.push({
+                                key: currentTheme.key,
+                                name: currentTheme.name,
+                                variables: variables,
+                                indent: currentTheme.indent,
+                                quoteStyle: currentTheme.quoteStyle
+                            });
+                        }
+                    }
+                    
+                    currentTheme = { 
+                        key: themeMatch[1],
+                        name: '',
+                        indent: line.match(/^(\s+)/)?.[1] || '            ',
+                        quoteStyle: "'"
+                    };
+                    varsContent = '';
+                    insideVars = false;
+                    varsDepth = 0;
+                    continue;
+                }
+                
+                if (currentTheme) {
+                    // name プロパティを検出
+                    const nameMatch = line.match(/name:\s*(['"])([^'"]+)\1/);
+                    if (nameMatch) {
+                        currentTheme.name = nameMatch[2];
+                        currentTheme.quoteStyle = nameMatch[1];
+                    }
+                    
+                    // vars ブロックの開始を検出（varsという名前のプロパティがある場合）
+                    if (line.match(/vars:\s*\{/)) {
+                        insideVars = true;
+                        varsDepth = 1;
+                        continue;
+                    }
+                    
+                    // varsブロック内の処理
+                    if (insideVars) {
+                        const openBraces = (line.match(/\{/g) || []).length;
+                        const closeBraces = (line.match(/\}/g) || []).length;
+                        varsDepth += openBraces - closeBraces;
+                        
+                        if (varsDepth === 0) {
+                            insideVars = false;
+                        } else if (line.includes('--')) {
+                            varsContent += line + '\n';
+                        }
+                    }
+                    // varsプロパティがなく、直接CSS変数が定義されている場合
+                    else if (line.includes('--')) {
+                        varsContent += line + '\n';
+                    }
+                }
+            }
+            
+            // 最後のテーマを保存
+            if (currentTheme && varsContent) {
+                const variables = parseJsVarsBlock(varsContent, currentTheme);
+                if (Object.keys(variables).length > 0) {
+                    themes.push({
+                        key: currentTheme.key,
+                        name: currentTheme.name || currentTheme.key.charAt(0).toUpperCase() + currentTheme.key.slice(1),
+                        variables: variables,
+                        indent: currentTheme.indent,
+                        quoteStyle: currentTheme.quoteStyle
+                    });
+                }
+            }
+            
+            return themes.length > 0 ? themes : null;
+        }
+
+        function parseJsVarsBlock(varsContent, themeInfo) {
+            const variables = {};
+            const varPattern = /(['"]?)(--[\w-]+)\1\s*:\s*(['"])([^'"]+)\3/g;
+            let varMatch;
+            
+            while ((varMatch = varPattern.exec(varsContent)) !== null) {
+                const varQuote = varMatch[1] || "'";
+                const varName = varMatch[2];
+                const valueQuote = varMatch[3];
+                const varValue = varMatch[4];
+                
+                variables[varName] = { 
+                    value: varValue, 
+                    original: varValue,
+                    varQuote: varQuote,
+                    valueQuote: valueQuote
+                };
+            }
+            
+            return variables;
+        }
+
+        // CSS属性セレクタ形式を抽出（拡張版 - 任意のセレクタに対応）
+        function extractCssAttributeThemes(html) {
+            const themes = [];
+            
+            // まず:rootのデフォルトテーマを抽出
+            const rootVars = extractCssRootVariables(html);
+            if (Object.keys(rootVars).length > 0) {
+                themes.push({
+                    key: 'default',
+                    name: 'Default',
+                    selector: ':root',
+                    variables: rootVars
+                });
+            }
+            
+            // 様々なセレクタパターンに対応
+            // html[data-theme="テーマ名"], body[data-theme="テーマ名"], [data-theme="テーマ名"]
+            // .theme-name, body.theme-name
+            // [data-mode="テーマ名"], [data-color="テーマ名"]
+            
+            const selectorPatterns = [
+                // data-theme attribute
+                /html\[data-theme=["'](\w+)["']\]\s*\{([^}]*)\}/g,
+                /body\[data-theme=["'](\w+)["']\]\s*\{([^}]*)\}/g,
+                /\[data-theme=["'](\w+)["']\]\s*\{([^}]*)\}/g,
+                // data-mode attribute
+                /\[data-mode=["'](\w+)["']\]\s*\{([^}]*)\}/g,
+                /\[data-color=["'](\w+)["']\]\s*\{([^}]*)\}/g,
+                // class-based themes
+                /\.theme-(\w+)\s*\{([^}]*)\}/g,
+                /body\.(\w+)\s*\{([^}]*)\}/g,
+            ];
+            
+            for (const pattern of selectorPatterns) {
+                let match;
+                const regex = new RegExp(pattern.source, pattern.flags);
+                
+                while ((match = regex.exec(html)) !== null) {
+                    const themeKey = match[1];
+                    const themeBody = match[2];
+                    
+                    // CSS変数が含まれているかチェック
+                    if (!themeBody.includes('--')) continue;
+                    
+                    const variables = {};
+                    const varRegex = /(--[\w-]+)\s*:\s*([^;]+);/g;
+                    let varMatch;
+                    
+                    while ((varMatch = varRegex.exec(themeBody)) !== null) {
+                        const varName = varMatch[1].trim();
+                        const varValue = varMatch[2].trim();
+                        variables[varName] = { 
+                            value: varValue, 
+                            original: varValue 
+                        };
+                    }
+                    
+                    if (Object.keys(variables).length > 0) {
+                        // 同じテーマキーが既に存在しないか確認
+                        if (!themes.find(t => t.key === themeKey)) {
+                            const themeName = themeKey.charAt(0).toUpperCase() + themeKey.slice(1);
+                            themes.push({
+                                key: themeKey,
+                                name: themeName,
+                                selector: match[0].substring(0, match[0].indexOf('{')).trim(),
+                                variables: variables
+                            });
+                        }
+                    }
+                }
+            }
+            
+            return themes.length > 0 ? themes : null;
+        }
+
+        // 従来のCSS :root変数を抽出
+        function extractCssRootVariables(html) {
+            const variables = {};
+            const rootRuleRegex = /:root\s*\{([^}]*)\}/g;
+            let rootMatch;
+            
+            while ((rootMatch = rootRuleRegex.exec(html)) !== null) {
+                const body = rootMatch[1];
+                const varRegex = /(--[\w-]+)\s*:\s*([^;]+);/g;
+                let varMatch;
+                
+                while ((varMatch = varRegex.exec(body)) !== null) {
+                    const name = varMatch[1].trim();
+                    const value = varMatch[2].trim();
+                    if (!variables[name]) {
+                        variables[name] = { value, original: value };
+                    }
+                }
+            }
+            
+            return variables;
+        }
+
+        // テーマ選択UIを表示
+        function showThemeSelector(themes) {
+            // セレクトボックスを完全にリセット
+            themeSelect.innerHTML = '<option value="">選択してください</option>';
+            themeSelect.value = '';
+            
+            themes.forEach(theme => {
+                const option = document.createElement('option');
+                option.value = theme.key;
+                option.textContent = theme.name;
+                themeSelect.appendChild(option);
+            });
+            themeSelector.classList.remove('hidden');
+            
+            // イベントリスナーを一度削除してから再設定
+            themeSelect.onchange = null;
+            themeSelect.onchange = (e) => {
+                const selectedKey = e.target.value;
+                if (selectedKey) {
+                    const selectedTheme = detectedThemes.find(t => t.key === selectedKey);
+                    if (selectedTheme) {
+                        currentThemeKey = selectedKey;
+                        currentVariables = selectedTheme.variables;
+                        activateTheme();
+                        showToast(`テーマ "${selectedTheme.name}" を選択しました`);
+                    }
+                }
+            };
         }
 
         function renderVariableEditor() {
+            if (Object.keys(currentVariables).length === 0) {
+                variableList.innerHTML = `<div class="text-center py-10 text-zinc-600 text-sm italic">CSS変数が見つかりませんでした</div>`;
+                return;
+            }
             variableList.innerHTML = '';
             Object.entries(currentVariables).forEach(([name, data]) => {
                 const card = document.createElement('div');
                 card.className = 'color-card p-4 rounded-lg flex flex-col gap-3';
                 card.innerHTML = `
                     <div class="flex items-center justify-between">
-                        <div class="overflow-hidden mr-2 flex-1 text-left">
+                        <div class="overflow-hidden mr-2 flex-1">
                             <div class="text-[10px] text-zinc-500 font-bold uppercase truncate">${name}</div>
                             <div class="text-xs text-zinc-300 font-mono">${data.value}</div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="resetSingleVariable('${name}')" class="p-1.5 rounded hover:bg-zinc-700 text-zinc-500 hover:text-amber-400 transition-colors" title="元に戻す">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                            <button class="reset-single-btn p-1.5 rounded hover:bg-zinc-700 transition-colors text-zinc-500 hover:text-amber-400" data-var-name="${name}" title="元に戻す">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                    <path d="M3 3v5h5"/>
+                                </svg>
                             </button>
-                            <input type="color" value="${convertToHex(data.value)}" oninput="updateVariable('${name}', this.value)">
+                            <input type="color" value="${convertToHex(data.value)}" data-var-name="${name}" class="color-input">
                         </div>
                     </div>
                 `;
                 variableList.appendChild(card);
             });
+            
+            document.querySelectorAll('.reset-single-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const varName = btn.getAttribute('data-var-name');
+                    resetSingleVariable(varName);
+                };
+            });
+            
+            document.querySelectorAll('.color-input').forEach(input => {
+                input.oninput = () => {
+                    const varName = input.getAttribute('data-var-name');
+                    updateVariable(varName, input.value);
+                };
+            });
         }
 
+        function setupPreview(html) {
+            const injectorScript = `
+            <script>
+                window.addEventListener('message', function(event) {
+                    if (event.data.type === 'UPDATE_STYLES') {
+                        let style = document.getElementById('editor-styles-injected');
+                        if (!style) {
+                            style = document.createElement('style');
+                            style.id = 'editor-styles-injected';
+                            document.head.appendChild(style);
+                        }
+                        style.textContent = event.data.css;
+                    }
+                    if (event.data.type === 'SET_THEME') {
+                        document.documentElement.setAttribute('data-theme', event.data.theme);
+                    }
+                });
+            <\/script>`;
+            
+            let previewContent = html;
+            if (previewContent.includes('<head>')) {
+                previewContent = previewContent.replace('<head>', '<head>' + injectorScript);
+            } else {
+                previewContent = injectorScript + previewContent;
+            }
+
+            const blob = new Blob([previewContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            previewIframe.src = url;
+
+            previewIframe.onload = () => {
+                setTimeout(() => {
+                    // CSS属性形式の場合はdata-theme属性を設定
+                    if (extractionMethod === 'css-attribute' && currentThemeKey !== 'default') {
+                        previewIframe.contentWindow.postMessage({
+                            type: 'SET_THEME',
+                            theme: currentThemeKey
+                        }, '*');
+                    }
+                    applyStylesToPreview();
+                }, 500);
+            };
+        }
+
+        function updateVariable(name, val) {
+            currentVariables[name].value = val;
+            
+            const cards = variableList.querySelectorAll('.color-card');
+            cards.forEach(card => {
+                if (card.querySelector('.uppercase').textContent === name) {
+                    card.querySelector('.font-mono').textContent = val;
+                }
+            });
+            
+            applyStylesToPreview();
+        }
+
+        function applyStylesToPreview() {
+            let css = '';
+            
+            if (extractionMethod === 'css-attribute') {
+                // CSS属性形式の場合
+                const currentTheme = detectedThemes.find(t => t.key === currentThemeKey);
+                if (currentTheme) {
+                    css = `${currentTheme.selector} {`;
+                    Object.entries(currentVariables).forEach(([name, data]) => {
+                        css += `${name}: ${data.value} !important;`;
+                    });
+                    css += '}';
+                }
+            } else {
+                // :root形式の場合
+                css = ':root {';
+                Object.entries(currentVariables).forEach(([name, data]) => {
+                    css += `${name}: ${data.value} !important;`;
+                });
+                css += '}';
+            }
+            
+            if (previewIframe.contentWindow) {
+                previewIframe.contentWindow.postMessage({
+                    type: 'UPDATE_STYLES',
+                    css: css
+                }, '*');
+            }
+        }
+
+        // --- リセット機能 ---
         function resetSingleVariable(name) {
-            if (currentVariables[name]) {
+            if (currentVariables[name] && currentVariables[name].original) {
                 currentVariables[name].value = currentVariables[name].original;
                 renderVariableEditor();
                 applyStylesToPreview();
@@ -283,85 +778,195 @@
         }
 
         resetAllBtn.onclick = () => {
-            Object.values(currentVariables).forEach(v => v.value = v.original);
-            renderVariableEditor();
-            applyStylesToPreview();
-            showToast("すべて初期値に戻しました");
-        };
-
-        function updateVariable(name, val) {
-            currentVariables[name].value = val;
-            applyStylesToPreview();
-            // リアルタイム反映のために、表示されている16進数テキストも更新
-            const cards = variableList.querySelectorAll('.color-card');
-            cards.forEach(card => {
-                if (card.querySelector('.uppercase').textContent === name) {
-                    card.querySelector('.font-mono').textContent = val;
+            let resetCount = 0;
+            Object.entries(currentVariables).forEach(([name, data]) => {
+                if (data.value !== data.original) {
+                    data.value = data.original;
+                    resetCount++;
                 }
             });
-        }
+            
+            if (resetCount > 0) {
+                renderVariableEditor();
+                applyStylesToPreview();
+                showToast(`${resetCount}件の変数を元に戻しました`);
+            } else {
+                showToast("変更された変数はありません");
+            }
+        };
 
-        function applyStylesToPreview() {
-            let css = ':root {';
-            Object.entries(currentVariables).forEach(([name, data]) => css += `${name}: ${data.value} !important;`);
-            css += '}';
-            if (previewIframe.contentWindow) previewIframe.contentWindow.postMessage({ type: 'UPDATE_STYLES', css }, '*');
-        }
+        // クリア機能：アプリを初期状態に戻す
+        clearBtn.onclick = () => {
+            // 全ての状態をリセット
+            originalHtml = "";
+            currentVariables = {};
+            detectedThemes = [];
+            currentThemeKey = null;
+            extractionMethod = null;
+            themeMetadata = {};
+            currentFileName = "updated_file.html";
+            
+            // UIをリセット
+            variableList.innerHTML = `<div class="text-center py-10 text-zinc-600 text-sm italic">ファイルを読み込んでください</div>`;
+            themeSelector.classList.add('hidden');
+            themeSelect.innerHTML = '<option value="">選択してください</option>';
+            previewOverlay.classList.remove('hidden');
+            actionButtons.classList.add('opacity-30', 'pointer-events-none');
+            importTriggerBtn.classList.add('hidden');
+            resetAllBtn.classList.add('hidden');
+            clearBtn.classList.add('hidden');
+            fileNameDisplay.textContent = '---';
+            fileNameHeader.textContent = 'No file loaded';
+            
+            // iframeをクリア
+            previewIframe.src = 'about:blank';
+            
+            // ファイル入力をリセット
+            fileInput.value = '';
+            
+            showToast("クリアしました");
+        };
 
-        function setupPreview(html) {
-            const injector = `<script>window.addEventListener('message', e => { if (e.data.type === 'UPDATE_STYLES') { let s = document.getElementById('inj'); if(!s){s=document.createElement('style');s.id='inj';document.head.appendChild(s);} s.textContent = e.data.css; } });<\/script>`;
-            let content = html.includes('<head>') ? html.replace('<head>', '<head>' + injector) : injector + html;
-            previewIframe.src = URL.createObjectURL(new Blob([content], { type: 'text/html;charset=utf-8' }));
-            previewIframe.onload = () => setTimeout(applyStylesToPreview, 500);
-        }
+        // --- エクスポート・インポート ---
+        importTriggerBtn.onclick = () => importModal.classList.remove('hidden');
+        document.getElementById('close-modal-btn').onclick = () => importModal.classList.add('hidden');
 
+        applyImportBtn.onclick = () => {
+            const vRegex = /(--[\w-]+)\s*:\s*([^;]+);/g;
+            let m, c=0;
+            while ((m = vRegex.exec(importTextarea.value)) !== null) {
+                const name = m[1].trim();
+                const value = m[2].trim();
+                if (currentVariables[name]) {
+                    currentVariables[name].value = value;
+                    c++;
+                }
+            }
+            if(c>0) {
+                renderVariableEditor();
+                applyStylesToPreview();
+                showToast(`${c}件の変数を反映しました`);
+                importModal.classList.add('hidden');
+            } else {
+                showToast("一致する変数が見つかりませんでした", "error");
+            }
+        };
+
+        copyPaletteBtn.onclick = () => {
+            let rootCss = `:root {\n`;
+            Object.entries(currentVariables).forEach(([n, d]) => rootCss += `  ${n}: ${d.value};\n`);
+            rootCss += `}`;
+            copyBuffer.value = rootCss;
+            copyBuffer.select();
+            document.execCommand('copy');
+            showToast("パレットをコピーしました");
+        };
+
+        downloadBtn.onclick = () => {
+            let final = originalHtml;
+
+            if (extractionMethod === 'js' && currentThemeKey) {
+                // JavaScript形式の更新
+                const themeData = detectedThemes.find(t => t.key === currentThemeKey);
+                if (themeData) {
+                    const themeBlockPattern = new RegExp(
+                        `(${currentThemeKey}:\\s*\\{[\\s\\S]*?vars:\\s*\\{)([\\s\\S]*?)(\\n\\s*\\})`,
+                        'g'
+                    );
+                    
+                    final = final.replace(themeBlockPattern, (match, before, oldVars, after) => {
+                        const varsLines = oldVars.split('\n').filter(line => line.trim());
+                        let baseIndent = '                    ';
+                        
+                        if (varsLines.length > 0) {
+                            const indentMatch = varsLines[0].match(/^(\s*)/);
+                            if (indentMatch) {
+                                baseIndent = indentMatch[1];
+                            }
+                        }
+                        
+                        const quoteStyle = themeData.quoteStyle || "'";
+                        let newVarsBlock = '\n';
+                        const varEntries = Object.entries(currentVariables);
+                        
+                        varEntries.forEach(([name, data], index) => {
+                            const varQuote = data.varQuote || quoteStyle;
+                            const valueQuote = data.valueQuote || quoteStyle;
+                            const isLast = index === varEntries.length - 1;
+                            
+                            newVarsBlock += `${baseIndent}${varQuote}${name}${varQuote}: ${valueQuote}${data.value}${valueQuote}`;
+                            if (!isLast) {
+                                newVarsBlock += ',';
+                            }
+                            newVarsBlock += '\n';
+                        });
+                        
+                        return before + newVarsBlock + after;
+                    });
+                }
+            } else if (extractionMethod === 'css-attribute' && currentThemeKey) {
+                // CSS属性セレクタ形式の更新
+                const themeData = detectedThemes.find(t => t.key === currentThemeKey);
+                if (themeData) {
+                    const selectorEscaped = themeData.selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const themeBlockPattern = new RegExp(
+                        `(${selectorEscaped}\\s*\\{)([^}]*)(\\})`,
+                        'g'
+                    );
+                    
+                    final = final.replace(themeBlockPattern, (match, before, oldVars, after) => {
+                        let newVarsBlock = '\n';
+                        Object.entries(currentVariables).forEach(([name, data]) => {
+                            newVarsBlock += `    ${name}: ${data.value};\n`;
+                        });
+                        return before + newVarsBlock + after;
+                    });
+                }
+            } else if (extractionMethod === 'css-root') {
+                // :root形式の更新
+                let rootCss = `:root {\n`;
+                Object.entries(currentVariables).forEach(([n, d]) => rootCss += `  ${n}: ${d.value};\n`);
+                rootCss += `}`;
+                
+                const rootMatch = /:root\s*\{[\s\S]*?\}/;
+                if (final.match(rootMatch)) {
+                    final = final.replace(rootMatch, rootCss);
+                } else {
+                    final = final.replace('</head>', `<style>\n${rootCss}\n</style>\n</head>`);
+                }
+            }
+
+            const blob = new Blob([final], { type: 'text/html;charset=utf-8' });
+            const a = document.createElement('a');
+            const newName = currentFileName.includes('.') 
+                ? currentFileName.replace(/\.(html?)$/i, '_edited.$1') 
+                : currentFileName + '_edited.html';
+                
+            a.href = URL.createObjectURL(blob);
+            a.download = newName;
+            a.click();
+            showToast("ファイルを保存しました");
+        };
+
+        // --- ユーティリティ ---
         function convertToHex(s) {
             if(s.startsWith('#')) return s;
             const ctx = document.createElement('canvas').getContext('2d');
-            ctx.fillStyle = s; return ctx.fillStyle;
+            ctx.fillStyle = s;
+            return ctx.fillStyle;
         }
 
         function showToast(m, t="success") {
             const toast = document.createElement('div');
             toast.className = `bg-zinc-800 text-xs text-white px-4 py-3 rounded-lg border border-zinc-700 shadow-xl transition-all flex items-center gap-2`;
             toast.innerHTML = `<div class="w-1.5 h-1.5 rounded-full ${t==='success'?'bg-blue-500':'bg-red-500'}"></div>${m}`;
-            document.getElementById('toast-container').appendChild(toast);
-            setTimeout(() => { toast.classList.add('opacity-0', 'translate-x-10'); setTimeout(() => toast.remove(), 500); }, 3000);
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-10');
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
         }
-
-        document.getElementById('copy-palette-btn').onclick = () => {
-            let css = `:root {\n`; Object.entries(currentVariables).forEach(([n, d]) => css += `  ${n}: ${d.value};\n`); css += `}`;
-            copyBuffer.value = css; copyBuffer.select(); document.execCommand('copy'); showToast("コピーしました");
-        };
-
-        document.getElementById('download-btn').onclick = () => {
-            let final = originalHtml;
-            if (extractionMethod === 'js' && currentThemeKey) {
-                const themeBlockPattern = new RegExp(`(${currentThemeKey}:\\s*\\{[\\s\\S]*?vars:\\s*\\{)([\\s\\S]*?)(\\n\\s*\\})`, 'g');
-                final = final.replace(themeBlockPattern, (match, before, oldVars, after) => {
-                    let newVars = '\n';
-                    Object.entries(currentVariables).forEach(([name, data]) => newVars += `                    '${name}': '${data.value}',\n`);
-                    return before + newVars + after;
-                });
-            } else {
-                let rootCss = `:root {\n`; Object.entries(currentVariables).forEach(([n, d]) => rootCss += `  ${n}: ${d.value};\n`); rootCss += `}`;
-                final = final.match(/:root\s*\{[\s\S]*?\}/) ? final.replace(/:root\s*\{[\s\S]*?\}/, rootCss) : final.replace('</head>', `<style>\n${rootCss}\n</style>\n</head>`);
-            }
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([final], { type: 'text/html;charset=utf-8' }));
-            a.download = currentFileName.replace(/\.(html?)$/i, '_edited.$1');
-            a.click();
-        };
-
-        document.getElementById('close-modal-btn').onclick = () => importModal.classList.add('hidden');
-        document.getElementById('import-trigger-btn').onclick = () => importModal.classList.remove('hidden');
-
-        document.getElementById('load-sample-btn').onclick = (e) => {
-            e.stopPropagation();
-            const sample = `<!DOCTYPE html><html><head><style>:root { --bg: #ffffff; --text: #1f2937; --primary: #3b82f6; } body { background: var(--bg); color: var(--text); padding: 2rem; font-family: sans-serif; } .card { border: 2px solid var(--primary); padding: 1rem; border-radius: 8px; }</style></head><body><div class="card"><h1>Sample</h1><p>色の変更を試せます。</p></div></body></html>`;
-            currentFileName = "sample.html";
-            processHtmlContent(sample);
-        };
     </script>
 </body>
 </html>
